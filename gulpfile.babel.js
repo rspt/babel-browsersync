@@ -10,9 +10,13 @@ import del from 'del'
 
 const paths = {
   build: 'build',
+  fonts: {
+    src: 'app/fonts/**/*',
+    dest: 'build/fonts/'
+  },
   images: {
-    src: 'app/images/**/*.{jpg,jpeg,png,svg}',
-    dest: 'build/images/'
+    src: 'app/img/**/*.{jpg,jpeg,png,svg}',
+    dest: 'build/img/'
   },
   scripts: {
     src: 'app/js/**/*.js',
@@ -52,6 +56,12 @@ export function scripts () {
     .pipe(browserSync.reload({stream: true}))
 }
 
+export function fonts () {
+  return gulp.src(paths.fonts.src, {since: gulp.lastRun('fonts')})
+    .pipe(gulp.dest(paths.fonts.dest))
+    .pipe(browserSync.reload({stream: true}))
+}
+
 export function images () {
   return gulp.src(paths.images.src, {since: gulp.lastRun('images')})
     .pipe(imagemin({optimizationLevel: 5}))
@@ -69,6 +79,7 @@ export function views () {
 function watchAssets () {
   gulp.watch(paths.scripts.src, scripts)
   gulp.watch(paths.styles.src, styles)
+  gulp.watch(paths.fonts.src, fonts)
   gulp.watch(paths.images.src, images)
   gulp.watch(paths.views.src, views)
 
@@ -79,7 +90,7 @@ function watchAssets () {
   })
 }
 
-const build = gulp.series(clean, gulp.parallel(styles, scripts, images, views))
+const build = gulp.series(clean, gulp.parallel(styles, scripts, images, fonts, views))
 export { build }
 
 const watch = gulp.series(clean, build, watchAssets)

@@ -15,7 +15,7 @@ const paths = {
     dest: 'build/fonts/'
   },
   images: {
-    src: 'app/img/**/*.{jpg,jpeg,png,svg}',
+    src: 'app/img/**/*.{jpg,jpeg,png,svg,ico}',
     dest: 'build/img/'
   },
   scripts: {
@@ -45,7 +45,7 @@ export function styles () {
       cascade: false
     }))
     .pipe(gulp.dest(paths.styles.dest))
-    .pipe(browserSync.reload({stream: true}))
+    .pipe(browserSync.stream())
 }
 
 export function scripts () {
@@ -53,27 +53,27 @@ export function scripts () {
     .pipe(babel())
     .pipe(uglify())
     .pipe(gulp.dest(paths.scripts.dest))
-    .pipe(browserSync.reload({stream: true}))
+    .pipe(browserSync.stream())
 }
 
 export function fonts () {
   return gulp.src(paths.fonts.src, {since: gulp.lastRun('fonts')})
     .pipe(gulp.dest(paths.fonts.dest))
-    .pipe(browserSync.reload({stream: true}))
+    .pipe(browserSync.stream())
 }
 
 export function images () {
   return gulp.src(paths.images.src, {since: gulp.lastRun('images')})
     .pipe(imagemin({optimizationLevel: 5}))
     .pipe(gulp.dest(paths.images.dest))
-    .pipe(browserSync.reload({stream: true}))
+    .pipe(browserSync.stream())
 }
 
 export function views () {
   return gulp.src(paths.views.src)
     .pipe(pug())
     .pipe(gulp.dest(paths.views.dest))
-    .pipe(browserSync.reload({stream: true}))
+    .on('end', browserSync.reload)
 }
 
 function watchAssets () {
